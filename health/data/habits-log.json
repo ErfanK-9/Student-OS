@@ -1,0 +1,19 @@
+{
+  "_meta": {
+    "refreshed_by": "template",
+    "last_refreshed": null,
+    "schema": "days[]: date, core {habit: bool}, micro {habit: bool}, non_negotiables_held bool"
+  },
+  "days": [
+    {
+      "date": "2026-10-21",
+      "core": {
+        "sample core habit": true
+      },
+      "micro": {
+        "sample micro habit": false
+      },
+      "non_negotiables_held": true
+    }
+  ]
+}

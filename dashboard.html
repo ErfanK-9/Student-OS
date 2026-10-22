@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student OS</title>
+<style>
+  :root {
+    --bg: #f6f5f1; --card: #ffffff; --ink: #1d1d1b; --muted: #6b6a65; --line: #e4e2dc;
+    --accent: #2f5d8a; --good: #2e7d4f; --warn: #b26a00; --bad: #b3261e; --bar: #d9e3ee;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141413; --card: #1e1e1c; --ink: #ecebe6; --muted: #9c9b95; --line: #2e2d2a;
+      --accent: #8fb6dd; --good: #6cc18f; --warn: #e3a54a; --bad: #ef8a80; --bar: #2b3a4a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 1080px; margin: 0 auto; padding: 24px 16px 48px; }
+  header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px; }
+  h1 { font-size: 22px; margin: 0; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 10px; }
+  .meta { color: var(--muted); font-size: 13px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin-top: 18px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
+  .wide { grid-column: 1 / -1; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li { padding: 6px 0; border-top: 1px solid var(--line); display: flex; gap: 10px; justify-content: space-between; }
+  li:first-child { border-top: 0; }
+  li > span:last-child:not(:first-child) { white-space: nowrap; text-align: right; }
+  .when { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .stat { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .stats { display: flex; gap: 28px; flex-wrap: wrap; }
+  .label { color: var(--muted); font-size: 12px; }
+  .pill { font-size: 12px; padding: 1px 8px; border-radius: 99px; border: 1px solid var(--line); white-space: nowrap; }
+  .good { color: var(--good); } .warn { color: var(--warn); } .bad { color: var(--bad); }
+  .bars { display: flex; align-items: flex-end; gap: 4px; height: 48px; margin-top: 12px; }
+  .bars div { flex: 1; background: var(--accent); border-radius: 3px 3px 0 0; min-height: 2px; }
+  .bars div.empty { background: var(--bar); }
+  ol { margin: 0; padding-left: 20px; } ol li { display: list-item; border: 0; padding: 4px 0; }
+  .empty-note { color: var(--muted); font-style: italic; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1 id="title">Student OS</h1>
+    <span class="meta" id="refreshed"></span>
+  </header>
+  <div class="grid">
+    <section class="card wide"><h2>Top 3 for today</h2><ol id="top3"></ol></section>
+    <section class="card"><h2>Today</h2><p id="window"></p><ul id="events"></ul></section>
+    <section class="card"><h2>Due / overdue · 7 days</h2><ul id="due"></ul></section>
+    <section class="card"><h2>Habits</h2>
+      <div class="stats">
+        <div><div class="stat" id="core"></div><div class="label">Core</div></div>
+        <div><div class="stat" id="micro"></div><div class="label">Micro</div></div>
+      </div>
+      <div class="bars" id="habitBars" aria-label="Core % over the last 7 days"></div>
+      <p class="label" id="missed"></p>
+    </section>
+    <section class="card"><h2>Non-negotiables</h2><ul id="nonneg"></ul></section>
+    <section class="card"><h2>Work</h2>
+      <div class="stats">
+        <div><div class="stat" id="perHour"></div><div class="label">$/h · 7 days</div></div>
+        <div><div class="stat" id="hours"></div><div class="label">hours</div></div>
+      </div>
+      <ul id="windows" style="margin-top:10px"></ul>
+    </section>
+    <section class="card" id="bodyCard"><h2>Body</h2>
+      <div class="stats"><div><div class="stat" id="weight"></div><div class="label">7-day avg (kg)</div></div></div>
+      <p class="label" id="weightDelta"></p>
+    </section>
+    <section class="card"><h2>Applications</h2><ul id="apps"></ul></section>
+    <section class="card" id="hustleCard"><h2>Side hustle</h2><p id="hustleNext"></p><p class="label" id="hustleMoney"></p></section>
+  </div>
+</main>
+
+<!-- /today replaces ONLY the JSON inside this block. "_schema" documents every field. -->
+<script id="data" type="application/json">
+{
+  "_schema": {
+    "owner": "string — first name",
+    "date": "YYYY-MM-DD of the brief",
+    "last_refreshed": "ISO timestamp",
+    "work_window": "{ label, ok: bool, why }",
+    "non_negotiables": "[{ text, done: bool }]",
+    "events": "[{ time: 'HH:MM', title, room, protected: bool }]",
+    "due": "[{ due: YYYY-MM-DD, title, domain: uni|income|health|side-hustle|system }]",
+    "habits": "{ core_pct, micro_pct, missed: [string], last7: [{ date, core_pct|null }] }",
+    "body": "{ tracked: bool, avg_7d: number|null, delta: number|null }",
+    "work": "{ per_hour, hours, by_window: [{ window, per_hour, hours }] }",
+    "applications": "[{ company, role, deadline, status }]",
+    "side_hustle": "{ enabled: bool, next_step, spend_to_date, revenue_to_date }",
+    "top3": "[{ task, why }]"
+  },
+  "owner": "",
+  "date": "2026-10-22",
+  "last_refreshed": null,
+  "work_window": { "label": "Not set — run /setup", "ok": false, "why": "no config yet" },
+  "non_negotiables": [],
+  "events": [],
+  "due": [],
+  "habits": { "core_pct": null, "micro_pct": null, "missed": [], "last7": [] },
+  "body": { "tracked": false, "avg_7d": null, "delta": null },
+  "work": { "per_hour": null, "hours": null, "by_window": [] },
+  "applications": [],
+  "side_hustle": { "enabled": false, "next_step": "", "spend_to_date": 0, "revenue_to_date": 0 },
+  "top3": [{ "task": "Run /setup", "why": "nothing else works until CLAUDE.md is filled in" }]
+}
+</script>
+<script>
+(function () {
+  var d;
+  try { d = JSON.parse(document.getElementById("data").textContent); }
+  catch (e) { document.getElementById("title").textContent = "Student OS — data block is not valid JSON"; return; }
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, text, cls) { var n = document.createElement(tag); if (text != null) n.textContent = text; if (cls) n.className = cls; return n; }
+  function list(id, items, render, emptyText) {
+    var ul = $(id); ul.textContent = "";
+    if (!items || !items.length) { ul.appendChild(el("li", emptyText, "empty-note")); return; }
+    items.forEach(function (it) { ul.appendChild(render(it)); });
+  }
+  function row(left, right, rightCls) { var li = el("li"); li.appendChild(el("span", left)); if (right != null) li.appendChild(el("span", right, rightCls || "when")); return li; }
+  function pct(v) { return v == null ? "—" : Math.round(v) + "%"; }
+  function money(v) { return v == null ? "—" : "$" + Number(v).toFixed(2); }
+  function daysUntil(iso) { return Math.round((new Date(iso + "T00:00:00") - new Date(d.date + "T00:00:00")) / 864e5); }
+
+  $("title").textContent = d.owner ? d.owner + "'s Student OS" : "Student OS";
+  $("refreshed").textContent = d.date + (d.last_refreshed ? " · refreshed " + d.last_refreshed.replace("T", " ").slice(0, 16) : " · not refreshed yet");
+
+  var top = $("top3"); top.textContent = "";
+  (d.top3 || []).forEach(function (t) { var li = el("li"); li.appendChild(el("strong", t.task)); if (t.why) li.appendChild(el("span", " — " + t.why, "label")); top.appendChild(li); });
+
+  var w = d.work_window || {};
+  $("window").textContent = "Work window: " + (w.label || "—") + " " + (w.ok ? "✅" : "❌") + (w.why ? " (" + w.why + ")" : "");
+  list("events", d.events, function (e) { return row((e.protected ? "🔒 " : "") + e.title + (e.room ? " (" + e.room + ")" : ""), e.time); }, "Nothing on the calendar.");
+
+  var due = (d.due || []).slice().sort(function (a, b) { return a.due < b.due ? -1 : 1; });
+  list("due", due, function (x) {
+    var n = daysUntil(x.due), cls = n < 0 ? "bad" : n <= 2 ? "warn" : "when";
+    return row(x.title + " · " + x.domain, n < 0 ? (-n) + "d overdue" : n === 0 ? "today" : "in " + n + "d", cls);
+  }, "Nothing due in the next 7 days.");
+
+  var h = d.habits || {};
+  $("core").textContent = pct(h.core_pct); $("micro").textContent = pct(h.micro_pct);
+  $("missed").textContent = h.missed && h.missed.length ? "Missed yesterday: " + h.missed.join(", ") : "";
+  var bars = $("habitBars"); bars.textContent = "";
+  (h.last7 || []).forEach(function (day) {
+    var b = el("div"); b.title = day.date + ": " + pct(day.core_pct);
+    if (day.core_pct == null) b.className = "empty"; else b.style.height = Math.max(2, day.core_pct) + "%";
+    bars.appendChild(b);
+  });
+
+  list("nonneg", d.non_negotiables, function (n) { return row(n.text, n.done ? "✓" : "○", n.done ? "good" : "when"); }, "Set these in /setup.");
+
+  var wk = d.work || {};
+  $("perHour").textContent = money(wk.per_hour); $("hours").textContent = wk.hours == null ? "—" : wk.hours;
+  list("windows", wk.by_window, function (x) { return row(x.window + " · " + x.hours + "h", money(x.per_hour) + "/h"); }, "No shifts logged.");
+
+  var body = d.body || {};
+  if (!body.tracked) $("bodyCard").hidden = true;
+  else {
+    $("weight").textContent = body.avg_7d == null ? "—" : body.avg_7d.toFixed(1);
+    $("weightDelta").textContent = body.delta == null ? "" : (body.delta > 0 ? "+" : "") + body.delta.toFixed(1) + " kg vs previous 7 days";
+  }
+
+  list("apps", d.applications, function (a) {
+    return row(a.company + " — " + a.role, a.status + (a.deadline ? " · " + a.deadline : ""));
+  }, "No applications yet. Try /apply.");
+
+  var s = d.side_hustle || {};
+  if (!s.enabled) $("hustleCard").hidden = true;
+  else {
+    $("hustleNext").textContent = "Next: " + (s.next_step || "—");
+    $("hustleMoney").textContent = "Spend " + money(s.spend_to_date) + " · revenue " + money(s.revenue_to_date);
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "_meta": {
+    "refreshed_by": "template",
+    "last_refreshed": null,
+    "schema": "items[]: date, start, end, hours, gross, window; by_window{window: {hours, gross, per_hour}}"
+  },
+  "items": [
+    {
+      "date": "2026-10-20",
+      "start": "06:00",
+      "end": "10:00",
+      "hours": 4,
+      "gross": 120,
+      "window": "early"
+    }
+  ],
+  "by_window": {}
+}

@@ -1,0 +1,10 @@
+{
+  "_meta": {
+    "refreshed_by": "template",
+    "last_refreshed": null,
+    "schema": "items[]: date, kg; avg_7d, delta_vs_prev_7d computed by /today"
+  },
+  "items": [],
+  "avg_7d": null,
+  "delta_vs_prev_7d": null
+}

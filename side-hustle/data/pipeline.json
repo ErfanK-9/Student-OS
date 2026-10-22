@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "refreshed_by": "template",
+    "last_refreshed": null,
+    "schema": "steps[]: id, title, status (done|next|later); spend_to_date, revenue_to_date"
+  },
+  "steps": [
+    {
+      "id": 1,
+      "title": "Pick a niche",
+      "status": "next"
+    }
+  ],
+  "spend_to_date": 0,
+  "revenue_to_date": 0
+}

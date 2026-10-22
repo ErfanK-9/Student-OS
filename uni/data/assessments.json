@@ -1,0 +1,17 @@
+{
+  "_meta": {
+    "refreshed_by": "template",
+    "last_refreshed": null,
+    "schema": "items[]: subject, title, due (YYYY-MM-DD), weight_pct, status (todo|in_progress|submitted|marked), mark_pct|null"
+  },
+  "items": [
+    {
+      "subject": "ABC101",
+      "title": "Sample quiz 1",
+      "due": "2026-11-03",
+      "weight_pct": 10,
+      "status": "todo",
+      "mark_pct": null
+    }
+  ]
+}

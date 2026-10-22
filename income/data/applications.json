@@ -1,0 +1,18 @@
+{
+  "_meta": {
+    "refreshed_by": "template",
+    "last_refreshed": null,
+    "schema": "items[]: company, role, link, deadline, status (drafted|submitted|interview|offer|rejected), materials, updated"
+  },
+  "items": [
+    {
+      "company": "Sample Co",
+      "role": "Business Analyst Intern",
+      "link": "",
+      "deadline": "2026-11-10",
+      "status": "drafted",
+      "materials": "income/outputs/sample-co-ba-intern-2026-10-22.md",
+      "updated": "2026-10-22"
+    }
+  ]
+}
