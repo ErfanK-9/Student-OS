@@ -11,3 +11,7 @@ ruvector.db
 .swarm/
 .claude/settings.json.bak-*
 .claude-flow/mods/
+.claude-flow/harness-active-policy.json
+.claude-flow/policy/
+.claude/proven-config.json
+.claude/.proven-config-version
