@@ -17,6 +17,8 @@ job applications, research and coaching.
 | `.claude/`, `.claude-flow/` | Ruflo tooling (agents, hooks, swarm config). Its instructions are in `.claude/CLAUDE.md`. |
 
 ## Getting started
+0. Install the skills (skip if the plugin is already synced to your claude.ai account):
+   `/plugin install student-os --marketplace ErfanK-9/student-os`
 1. Run `/setup` and answer the five short rounds of questions. Nothing else works until `CLAUDE.md` has no `{{placeholders}}` left.
 2. Paste your resume into `income/inputs/resume.md` and fill the evidence bank in `income/CLAUDE.md`. `/apply` uses only those.
 3. Run `/today` each morning and `/week` on your planning day. Everything else is on demand.

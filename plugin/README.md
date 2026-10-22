@@ -4,6 +4,11 @@ The skills half of Student OS. Install this, then point Cowork at your Student O
 folder — the one holding `CLAUDE.md`, `TASKS.md`, `dashboard.html` and the domain
 folders (`uni/`, `health/`, `income/`, `side-hustle/`).
 
+## Install
+```
+/plugin install student-os --marketplace ErfanK-9/student-os
+```
+
 ## Skills
 
 | Call | What it does |

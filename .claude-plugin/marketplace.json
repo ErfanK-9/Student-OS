@@ -1,0 +1,11 @@
+{
+  "name": "student-os",
+  "owner": { "name": "Erfan Kordabadi" },
+  "plugins": [
+    {
+      "name": "student-os",
+      "source": "./plugin",
+      "description": "Eight skills that run a working student's week: setup, today, week, prep, study, apply, research, coach."
+    }
+  ]
+}
