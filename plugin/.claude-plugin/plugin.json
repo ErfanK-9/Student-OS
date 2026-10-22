@@ -1,0 +1,8 @@
+{
+  "name": "student-os",
+  "version": "0.1.0",
+  "description": "Student OS — eight skills that run a working student's week: morning brief, weekly reset, prep, study drills, applications, research, and a coach builder.",
+  "author": { "name": "Erfan Kordabadi" },
+  "keywords": ["student", "university", "productivity", "study", "internship", "habits"],
+  "license": "UNLICENSED"
+}
