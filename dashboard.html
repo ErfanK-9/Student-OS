@@ -4,23 +4,34 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Student OS</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <style>
   :root {
     --bg: #f6f5f1; --card: #ffffff; --ink: #1d1d1b; --muted: #6b6a65; --line: #e4e2dc;
     --accent: #2f5d8a; --good: #2e7d4f; --warn: #b26a00; --bad: #b3261e; --bar: #d9e3ee;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
       --bg: #141413; --card: #1e1e1c; --ink: #ecebe6; --muted: #9c9b95; --line: #2e2d2a;
       --accent: #8fb6dd; --good: #6cc18f; --warn: #e3a54a; --bad: #ef8a80; --bar: #2b3a4a;
+      color-scheme: dark;
     }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141413; --card: #1e1e1c; --ink: #ecebe6; --muted: #9c9b95; --line: #2e2d2a;
+    --accent: #8fb6dd; --good: #6cc18f; --warn: #e3a54a; --bad: #ef8a80; --bar: #2b3a4a;
+    color-scheme: dark;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0; background: var(--bg); color: var(--ink);
     font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
   }
-  main { max-width: 1080px; margin: 0 auto; padding: 24px 16px 48px; }
+  main {
+    max-width: 1080px; margin: 0 auto; padding-block: 24px 48px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
   header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px; }
   h1 { font-size: 22px; margin: 0; }
   h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 10px; }

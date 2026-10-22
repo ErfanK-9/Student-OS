@@ -38,6 +38,10 @@
 ## Voice
 {{voice_line}}
 
+## Dashboard
+- **Local:** open `dashboard.html` in a browser.
+- **Dashboard artifact (private, phone view):** https://claude.ai/artifact/7eKF6iTdFtpSRJsU4JdBE7 — republished by /today.
+
 ## Connectors
 <!-- /setup records what is actually connected in the session. -->
 {{connectors}}

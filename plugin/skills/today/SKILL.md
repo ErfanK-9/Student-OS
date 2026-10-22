@@ -50,7 +50,10 @@ Notion, or email items from this skill.
 4. **Regenerate `dashboard.html`.** Replace only the JSON inside
    `<script id="data" type="application/json">…</script>` with the fresh values.
    The schema is documented at the top of that script block. Don't touch the markup.
-5. Set `_meta.last_refreshed` in every data file you touched.
+5. **Phone view.** If `CLAUDE.md` lists a **Dashboard artifact** URL and the Artifact tool is
+   available, run `node scripts/artifact-page.mjs`, then publish `.artifact/dashboard.html`
+   with that `url`. It stays private. Skip silently if either is missing.
+6. Set `_meta.last_refreshed` in every data file you touched.
 
 ## Rules
 - Numbers over prose. If a habit percentage dropped, say the number; don't editorialise.
