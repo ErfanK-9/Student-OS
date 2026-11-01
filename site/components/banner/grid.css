@@ -1,0 +1,306 @@
+/* Student OS feature banner. Everything nests under .so-grid-wrap. */
+.so-grid-wrap {
+  --pad: 28px;
+  --gap: 14px;
+  --tile: #f3f3f4;
+  --ink: #1d1d1f;
+  --ink-2: #6e6e73;
+  --teal: #0f766e;
+  --teal-ink: #e6f4f1;
+  container-type: inline-size;
+  box-sizing: border-box;
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+
+  & .so-grid {
+    display: grid;
+    gap: var(--gap);
+    max-width: 984px;
+    margin: 0 auto;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 452px 300px 300px;
+    grid-template-areas: "today" "study" "apply";
+  }
+
+  @container (min-width: 600px) {
+    & .so-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: 600px 300px;
+      grid-template-areas: "today today" "study apply";
+    }
+  }
+
+  @container (min-width: 900px) {
+    & .so-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: 300px 300px;
+      grid-template-areas: "today today study" "today today apply";
+    }
+  }
+
+  @container (max-width: 599px) {
+    & .so-grid {
+      --pad: 22px;
+    }
+  }
+
+  /* ---- One frame for all three ---- */
+  & .so-tile {
+    position: relative;
+    overflow: hidden;
+    border-radius: 22px;
+    background: var(--tile);
+  }
+  & .so-tile--today { grid-area: today; }
+  & .so-tile--study { grid-area: study; }
+  & .so-tile--apply { grid-area: apply; }
+  & .so-tile[data-tone="teal"] { background: var(--teal); }
+
+  & .so-copy {
+    position: relative;
+    z-index: 1;
+    max-width: 340px;
+    margin: 0;
+    padding: 24px var(--pad) 0;
+    font-size: 17px;
+    line-height: 24px;
+    letter-spacing: -0.012em;
+    color: var(--ink-2);
+    text-wrap: pretty;
+  }
+  & .so-copy b { font-weight: 600; color: var(--ink); }
+  & .so-tile--today .so-copy { max-width: 460px; }
+  & .so-tile[data-tone="teal"] .so-copy { color: rgba(255, 255, 255, 0.72); }
+  & .so-tile[data-tone="teal"] .so-copy b { color: #fff; }
+
+  /* ---- Pictures pinned to the tile's bottom ---- */
+  & .so-picture { position: absolute; bottom: 0; }
+  & .so-picture--full { left: 0; width: 100%; }
+  & .so-picture--small { left: 0; width: 360px; }
+  & .so-stage .ss-stage { overflow: hidden; background: transparent; }
+
+  /* ---- /today ---- */
+  & .so-win {
+    position: absolute;
+    top: 8px;
+    left: var(--pad);
+    right: var(--pad);
+    /* Runs 28px off the bottom, just under the composer */
+    height: calc(100% + 20px);
+    --ss-canvas: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 10px 30px -10px rgba(30, 30, 60, 0.18), 0 2px 6px rgba(0, 0, 0, 0.04);
+  }
+  & .so-body {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 16px 20px 48px;
+    background: var(--ss-surface);
+  }
+  & .so-thread {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 14px;
+    min-height: 0;
+    padding-bottom: 20px;
+    overflow: hidden;
+    /* Older turns fade out under the title bar instead of meeting a hard edge */
+    mask-image: linear-gradient(to bottom, transparent 0, #000 56px);
+  }
+  & .so-past { display: grid; gap: 8px; }
+  & .so-past-q { justify-self: end; margin-bottom: 6px; }
+  & .so-q { display: flex; justify-content: flex-end; }
+  & .so-cmd {
+    padding: 8px 14px;
+    border-radius: 16px;
+    background: var(--teal);
+    color: #fff;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+  }
+  & .so-thinking { color: var(--ss-text); font-size: 13px; }
+  & .so-a { display: grid; gap: 10px; }
+  & .so-date { color: var(--ss-text-strong); font-size: 14px; font-weight: 600; }
+  & .so-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  & .so-item {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    align-items: baseline;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  & .so-item[data-on] { opacity: 1; }
+  & .so-when { color: var(--teal); font-size: 11px; font-weight: 600; }
+  & .so-stream { color: var(--ss-text-strong); font-size: 13px; line-height: 1.55; }
+  & .so-sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    opacity: 0;
+    translate: 0 4px;
+    will-change: transform;
+    transition: opacity 0.35s ease, translate 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  & .so-sources[data-on] { opacity: 1; translate: 0 0; }
+  & .so-source {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px 4px 8px;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px var(--ss-line);
+    color: var(--ss-text);
+    font-size: 11px;
+  }
+
+  /* ---- /study: one quiz card, off the bottom ---- */
+  & .so-quiz {
+    position: absolute;
+    top: 6px;
+    left: var(--pad);
+    right: var(--pad);
+    max-width: 300px;
+    padding: 16px 10px;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 8px 24px -10px rgba(30, 30, 60, 0.16);
+  }
+  & .so-quiz-head {
+    display: flex;
+    justify-content: space-between;
+    color: var(--ink-2);
+    font-size: 11px;
+    font-weight: 500;
+  }
+  & .so-quiz-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  /* Header and question share the option labels' left edge */
+  & .so-quiz-top { padding: 0 12px; }
+  & .so-quiz-q {
+    display: block;
+    margin: 4px 0 12px;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.35;
+    white-space: nowrap;
+    white-space: normal;
+  }
+  & .so-options { display: grid; gap: 6px; }
+  & .so-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+    color: var(--ink);
+    font-size: 13px;
+    transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  }
+  & .so-option[data-right] {
+    background: var(--teal-ink);
+    box-shadow: inset 0 0 0 1.5px var(--teal);
+    color: var(--teal);
+    font-weight: 600;
+  }
+  & .so-option-mark { width: 16px; height: 16px; color: var(--teal); }
+  & .so-radio {
+    display: block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.18);
+  }
+
+  /* ---- /apply: a resume sheet rising out of the teal ---- */
+  & .so-paper-wrap {
+    position: absolute;
+    inset: 0;
+  }
+  & .so-paper {
+    position: absolute;
+    top: 14px;
+    left: var(--pad);
+    display: grid;
+    align-content: start;
+    gap: 9px;
+    width: 204px;
+    height: 230px;
+    box-sizing: border-box;
+    padding: 18px;
+    border-radius: 8px;
+    background: #fff;
+    rotate: -3deg;
+    box-shadow: 0 12px 30px -10px rgba(0, 30, 25, 0.45);
+  }
+  & .so-paper-rule { height: 1px; margin: 3px 0; background: rgba(0, 0, 0, 0.08); }
+  & .so-paper-name { color: var(--ink); font-size: 12px; font-weight: 700; }
+  & .so-paper-sub { margin-top: -5px; color: var(--ink-2); font-size: 9px; }
+  & .so-paper-label { color: var(--teal); font-size: 8px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  & .so-match {
+    margin: 0 -3px;
+    color: var(--ink);
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 15px;
+  }
+  & .so-match > span {
+    padding: 1px 3px;
+    border-radius: 3px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    background: linear-gradient(var(--teal-ink), var(--teal-ink)) no-repeat 0 0 / 0% 100%;
+    transition: background-size 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  & .so-match[data-on] > span { background-size: 100% 100%; }
+  & .so-chip {
+    position: absolute;
+    top: 154px;
+    left: calc(var(--pad) + 70px);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--teal);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 6px 18px -6px rgba(0, 30, 25, 0.5);
+    opacity: 0;
+    translate: 0 6px;
+    will-change: transform;
+    transition: opacity 0.35s ease 0.25s, translate 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.25s;
+  }
+  & .so-chip[data-on] { opacity: 1; translate: 0 0; }
+
+  /* ---- Composer send button ---- */
+  & .so-send {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    margin-right: -6px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.06);
+    color: #9a9a9f;
+    rotate: -90deg;
+    transition: background 0.2s ease, color 0.2s ease, scale 0.12s ease;
+  }
+  & .so-send[data-ready] { background: var(--teal); color: #fff; }
+  & .so-send[data-pressed] { scale: 0.88; }
+}
+
+/* Contrast fixes on kit defaults (WCAG AA) */
+.so-grid-wrap .so-thinking { color: #6b6b70; }
+.so-grid-wrap .so-composer .ss-field__placeholder { color: #6b6b70; }
